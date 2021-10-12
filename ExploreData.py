@@ -124,6 +124,7 @@ ax.legend(labels=['dead', 'survivers'])
 axes = plt.gca()
 axes.set_ylim(0, 110)
 plt.xticks([r for r in range(len(x))], ["classe1","classe2", "classe3" ])
-
+plt.title("Pourcentage de morts et de survivants en fonction des classes")
+plt.savefig("DataAnalyse")
 
 plt.show()
