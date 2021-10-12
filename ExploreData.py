@@ -43,34 +43,87 @@ param = param.toarray()'''
 
 
 occurence = param.iloc[:,[0,-1,2]]
-occurence = occurence.value_counts()
-
 
 occurence = occurence.reset_index()
-#occurence["occurence"] = occurence[0]
+
+ages = pd.DataFrame(data = occurence, columns=["Age"])
+
+occurence  = occurence.drop(["Age","index"], axis = 1)
+
+ages = ages.where(ages >= 18, 0) #0 pour enfant
+
+ages = ages.where(ages < 18, 1) #1 pour adulte
+
+classeSurv = occurence
+
+occurence = (pd.concat([occurence, ages],axis = 1))
 
 
-occurence = occurence.sort_values(by = ['Pclass','Survived'])
-occurence = occurence.to_numpy()
-print(occurence)
-occurence = np.reshape(occurence, (3,2,3))
+occurence = occurence.value_counts()
+occurence = occurence.reset_index()
 
-occurence = occurence[:,:,2].astype(float)
-for i in range(len(occurence)):
-    occurence[i] = occurence[i] / sum(occurence[i]) *100
-print(occurence)
+
+
+occurence = occurence.sort_values(by = ['Pclass','Age','Survived'])
+data = occurence.to_numpy()
+data = np.reshape(data, (3,4,4))
+
+for i in range(len(data)):
+    data[:,:,-1][i] = data[:,:,-1][i]/ sum(data[:,:,-1][i]) * 100
+    
+
+
+data = np.reshape(data, (12,4))
+data = pd.DataFrame(data, columns=(['Pclass','Age','Survived','percent']))
+data = data.sort_values(by = ['Age','Pclass','Survived'])
+
+data = data.iloc[[0,2,4,6,8,10]]
+print(data)
+data = data.drop(["Survived"], axis=1)
+data = data.sort_values(by = ['Age','Pclass'])
+
+data = data["percent"].to_numpy()
+print(data)
 
 fig = plt.figure()
 ax = fig.add_axes([0,0,1,1])
 x = np.arange(3) 
-y = occurence[:,1]
-yprim = occurence[:,0]
+y = data[:3]
+yprim = data[3:]
 ax.bar(x,y, color = 'b', width = 0.25) #qui ont survécu
 ax.bar(x+0.25,yprim, color = 'r', width = 0.25) #qui n'ont survécu
-ax.legend(labels=['survivers', 'dead'])
+ax.legend(labels=['Enfants', 'Adultes'])
 axes = plt.gca()
-axes.set_ylim(0, 100)
 plt.xticks([r + 0.25 / 2 for r in range(len(x))], ["classe1","classe2", "classe3" ])
+
+
+plt.show()
+
+
+classeSurv = classeSurv.value_counts()
+classeSurv = classeSurv.reset_index()
+
+classeSurv = classeSurv.sort_values(by = ['Pclass','Survived'])
+classeSurv = classeSurv.to_numpy()
+print(classeSurv)
+classeSurv = np.reshape(classeSurv, (3,2,3))
+
+classeSurv = classeSurv[:,:,2].astype(float)
+for i in range(len(classeSurv)):
+    classeSurv[i] = classeSurv[i] / sum(classeSurv[i]) *100
+print(classeSurv)
+
+fig = plt.figure()
+ax = fig.add_axes([0,0,1,1])
+x = np.arange(3) 
+y = classeSurv[:,1]
+yprim = classeSurv[:,0]
+ax.bar(x,yprim+y, color = ['red' for i in y], width = 0.25) #qui n'ont survécu
+ax.bar(x,y, color = ['blue' for i in y], width = 0.25) #qui ont survécu
+ax.legend(labels=['dead', 'survivers'])
+axes = plt.gca()
+axes.set_ylim(0, 110)
+plt.xticks([r for r in range(len(x))], ["classe1","classe2", "classe3" ])
 
 
 plt.show()
