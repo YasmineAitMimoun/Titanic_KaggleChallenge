@@ -8,6 +8,7 @@ from sklearn.compose import ColumnTransformer
 from sklearn.impute import SimpleImputer
 
 
+
 dataTrain = pd.read_csv('train.csv')
 
 #Récupérer les colonnes Pclass, Sex, Age Sibsp, Parch, Fare,Embareked
@@ -125,6 +126,5 @@ axes = plt.gca()
 axes.set_ylim(0, 110)
 plt.xticks([r for r in range(len(x))], ["classe1","classe2", "classe3" ])
 plt.title("Pourcentage de morts et de survivants en fonction des classes")
-plt.savefig("DataAnalyse")
 
 plt.show()
